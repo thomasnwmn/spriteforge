@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
+#include "input.h"
+#include "render.h"
+#include "asset_manager.h"
+#include "entity.h"
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+#define PLAYER_WIDTH 100
+#define PLAYER_HEIGHT 100
 
 int main(int argc, char* argv[]) {
 
@@ -46,6 +55,26 @@ int main(int argc, char* argv[]) {
     Uint64 previous_ticks = SDL_GetPerformanceCounter();
     float delta_time = 0.0f;
 
+    input_init(); // Initialize the input system
+    asset_init(); // Initialize the asset manager
+    entity_init(); // Initialize the entity system
+    input_set_default_keybinds(); // Set default keybinds for actions
+
+
+    // --- Camera Variables ---
+    float camera_x = 0.0f;
+    float camera_y = 0.0f;
+
+    // grab the player texture from the assets folder, and load it into memory (and cache for later use)
+    SDL_Texture* player_texture = asset_get_texture(renderer, "assets/player.png");
+
+    // CREATE OUR ENTITIES ONCE BEFORE THE GAME STARTS!
+    Entity* player = entity_create(400.0f, 300.0f, (float)PLAYER_WIDTH, (float)PLAYER_HEIGHT, 300.0f, player_texture);
+    
+    entity_create(100.0f, 100.0f, 50.0f, 50.0f, 0.0f, player_texture);
+    entity_create(600.0f, 150.0f, 50.0f, 50.0f, 0.0f, player_texture);
+    entity_create(250.0f, 500.0f, 50.0f, 50.0f, 0.0f, player_texture);
+
     while (is_running) {
         Uint64 current_ticks = SDL_GetPerformanceCounter();
         Uint64 frequency = SDL_GetPerformanceFrequency();
@@ -66,18 +95,59 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // update game objects here using delta_time for frame-independent movement
+        input_update(); // Update the input system
+
+        // update game objects here using delta_time
+
+        if (input_get_action_down(ACTION_JUMP)) {
+            printf("The player JUMPED!\n");
+        }
+
+        // move left
+        if (input_get_action(ACTION_MOVE_LEFT)) {
+            player->x -= player->speed * delta_time;
+        }
+
+        // move right
+        if (input_get_action(ACTION_MOVE_RIGHT)) {
+            player->x += player->speed * delta_time;
+        }
+
+        if (input_get_action(ACTION_MOVE_UP)) {
+            player->y -= player->speed * delta_time;
+        }
+
+        if (input_get_action(ACTION_MOVE_DOWN)) {
+            player->y += player->speed * delta_time;
+        }
+
+        camera_x = player->x - 400.0f + ((float)PLAYER_WIDTH / 2.0f); // 50 is player width
+        camera_y = player->y - 300.0f + ((float)PLAYER_HEIGHT / 2.0f); // 50 is player height
+
+        /* if (input_get_key(SDL_SCANCODE_SPACE)) {
+            printf("Spacebar is being held down!\n");
+        } */
+
+        /* if (input_get_key_down(SDL_SCANCODE_W)) {
+            printf("W key was just pressed!\n");
+        } */
 
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 
         SDL_RenderClear(renderer);
 
         // draw game objects here
+        // represents a tree or a building in the world
+        render_draw_rect(renderer, 0, 0, 100, 100, camera_x, camera_y, 0, 255, 0, 255); // Draw a green square at the top-left corner
 
+        entity_render_all(renderer, camera_x, camera_y); // Render all active entities
+
+        // swap the buffer
         SDL_RenderPresent(renderer);
     }
 
     SDL_DestroyRenderer(renderer);
+    asset_cleanup(); // Clean up loaded textures
     SDL_DestroyWindow(window);
     SDL_Quit();
 

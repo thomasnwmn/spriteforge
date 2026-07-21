@@ -1,0 +1,29 @@
+# CMake build directories
+build/
+out/
+bin/
+
+# Vcpkg package manager
+vcpkg/
+vcpkg_installed/
+
+# Visual Studio & VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Compiled binaries and debugging files
+*.exe
+*.dll
+*.pdb
+*.ilk
+*.lib
+*.exp
+*.obj
+*.o
+*.a
+
+# OS generated files
+.DS_Store
+Thumbs.db

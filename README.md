@@ -11,17 +11,17 @@ Building an engine is a marathon, not a sprint. Here are the 10 core systems we 
   - The main game loop (Process Input -> Update -> Render).
   - Time management (calculating Delta Time to ensure the game runs at the same speed on all computers).
 
-- [ ] **2. Input System**
+- [x] **2. Input System**
   - Polling keyboard, mouse, and controller state.
   - Abstracting input (e.g., mapping `SPACE` or `Gamepad A` to a logical `JUMP` action).
 
-- [ ] **3. Rendering System (2D)**
+- [x] **3. Rendering System (2D)**
   - Clearing the screen and swapping buffers.
   - Drawing textures (Sprites) to the screen.
   - A 2D Camera system (panning and zooming).
   - *Future:* Sprite batching for rendering thousands of sprites efficiently.
 
-- [ ] **4. Resource / Asset Manager**
+- [x] **4. Resource / Asset Manager**
   - Loading assets from disk (images, fonts, audio files).
   - Caching assets in a hash map/dictionary so they aren't loaded into memory multiple times.
 

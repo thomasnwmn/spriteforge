@@ -4,6 +4,18 @@
     <ClCompile Include="C:\Users\tnewm\OneDrive\Documents\Github\spriteforge\src\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\tnewm\OneDrive\Documents\Github\spriteforge\src\input.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tnewm\OneDrive\Documents\Github\spriteforge\src\render.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tnewm\OneDrive\Documents\Github\spriteforge\src\asset_manager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tnewm\OneDrive\Documents\Github\spriteforge\src\entity.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\tnewm\OneDrive\Documents\Github\spriteforge\CMakeLists.txt" />

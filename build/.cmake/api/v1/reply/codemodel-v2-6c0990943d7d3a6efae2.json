@@ -6,6 +6,13 @@
 			[
 				{
 					"directoryIndex" : 0,
+					"id" : "PNG::PNG::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-PNG__PNG-Debug-218284a83f81cf28439a.json",
+					"name" : "PNG::PNG",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
 					"id" : "SDL2::SDL2::@6890427a1f51a3e7e1df",
 					"jsonFile" : "target-SDL2__SDL2-Debug-30dab754758e3c7fbc70.json",
 					"name" : "SDL2::SDL2",
@@ -17,6 +24,20 @@
 					"jsonFile" : "target-SDL2__SDL2main-Debug-ddcb0a2047cf7b603924.json",
 					"name" : "SDL2::SDL2main",
 					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SDL2_image::SDL2_image::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SDL2_image__SDL2_image-Debug-2ad46ae5c4ec29e46898.json",
+					"name" : "SDL2_image::SDL2_image",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ZLIB::ZLIB::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ZLIB__ZLIB-Debug-5f2cdc5ca73dbea7a6be.json",
+					"name" : "ZLIB::ZLIB",
+					"projectIndex" : 0
 				}
 			],
 			"directories" : 
@@ -25,7 +46,10 @@
 					"abstractTargetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3,
+						4
 					],
 					"build" : ".",
 					"jsonFile" : "directory-.-Debug-f040eec181a89de70dbe.json",
@@ -50,7 +74,10 @@
 					"abstractTargetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3,
+						4
 					],
 					"directoryIndexes" : 
 					[
@@ -70,7 +97,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ALL_BUILD-Debug-2c6e14be9dffdf8a3afa.json",
+					"jsonFile" : "target-ALL_BUILD-Debug-da4ee503516e423498b5.json",
 					"name" : "ALL_BUILD",
 					"projectIndex" : 0
 				},
@@ -84,7 +111,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "spriteforge::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-spriteforge-Debug-52da1afe384b762c4717.json",
+					"jsonFile" : "target-spriteforge-Debug-53ac3d0a33aa1aad01d3.json",
 					"name" : "spriteforge",
 					"projectIndex" : 0
 				}
@@ -93,6 +120,13 @@
 		{
 			"abstractTargets" : 
 			[
+				{
+					"directoryIndex" : 0,
+					"id" : "PNG::PNG::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-PNG__PNG-Release-218284a83f81cf28439a.json",
+					"name" : "PNG::PNG",
+					"projectIndex" : 0
+				},
 				{
 					"directoryIndex" : 0,
 					"id" : "SDL2::SDL2::@6890427a1f51a3e7e1df",
@@ -106,6 +140,20 @@
 					"jsonFile" : "target-SDL2__SDL2main-Release-d569efc188704cda32cc.json",
 					"name" : "SDL2::SDL2main",
 					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SDL2_image::SDL2_image::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SDL2_image__SDL2_image-Release-0add434e6a8129143c88.json",
+					"name" : "SDL2_image::SDL2_image",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ZLIB::ZLIB::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ZLIB__ZLIB-Release-5f2cdc5ca73dbea7a6be.json",
+					"name" : "ZLIB::ZLIB",
+					"projectIndex" : 0
 				}
 			],
 			"directories" : 
@@ -114,7 +162,10 @@
 					"abstractTargetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3,
+						4
 					],
 					"build" : ".",
 					"jsonFile" : "directory-.-Release-f040eec181a89de70dbe.json",
@@ -139,7 +190,10 @@
 					"abstractTargetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3,
+						4
 					],
 					"directoryIndexes" : 
 					[
@@ -159,7 +213,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ALL_BUILD-Release-2c6e14be9dffdf8a3afa.json",
+					"jsonFile" : "target-ALL_BUILD-Release-da4ee503516e423498b5.json",
 					"name" : "ALL_BUILD",
 					"projectIndex" : 0
 				},
@@ -173,7 +227,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "spriteforge::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-spriteforge-Release-ab11e68d65cf5ce9dfb9.json",
+					"jsonFile" : "target-spriteforge-Release-898da467c11082605e76.json",
 					"name" : "spriteforge",
 					"projectIndex" : 0
 				}
@@ -182,6 +236,13 @@
 		{
 			"abstractTargets" : 
 			[
+				{
+					"directoryIndex" : 0,
+					"id" : "PNG::PNG::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-PNG__PNG-MinSizeRel-218284a83f81cf28439a.json",
+					"name" : "PNG::PNG",
+					"projectIndex" : 0
+				},
 				{
 					"directoryIndex" : 0,
 					"id" : "SDL2::SDL2::@6890427a1f51a3e7e1df",
@@ -195,6 +256,20 @@
 					"jsonFile" : "target-SDL2__SDL2main-MinSizeRel-d569efc188704cda32cc.json",
 					"name" : "SDL2::SDL2main",
 					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SDL2_image::SDL2_image::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SDL2_image__SDL2_image-MinSizeRel-0add434e6a8129143c88.json",
+					"name" : "SDL2_image::SDL2_image",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ZLIB::ZLIB::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ZLIB__ZLIB-MinSizeRel-5f2cdc5ca73dbea7a6be.json",
+					"name" : "ZLIB::ZLIB",
+					"projectIndex" : 0
 				}
 			],
 			"directories" : 
@@ -203,7 +278,10 @@
 					"abstractTargetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3,
+						4
 					],
 					"build" : ".",
 					"jsonFile" : "directory-.-MinSizeRel-f040eec181a89de70dbe.json",
@@ -228,7 +306,10 @@
 					"abstractTargetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3,
+						4
 					],
 					"directoryIndexes" : 
 					[
@@ -248,7 +329,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ALL_BUILD-MinSizeRel-2c6e14be9dffdf8a3afa.json",
+					"jsonFile" : "target-ALL_BUILD-MinSizeRel-da4ee503516e423498b5.json",
 					"name" : "ALL_BUILD",
 					"projectIndex" : 0
 				},
@@ -262,7 +343,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "spriteforge::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-spriteforge-MinSizeRel-9b9ce4ddd62f9643483f.json",
+					"jsonFile" : "target-spriteforge-MinSizeRel-26054b2fa5be8b6aa3d6.json",
 					"name" : "spriteforge",
 					"projectIndex" : 0
 				}
@@ -271,6 +352,13 @@
 		{
 			"abstractTargets" : 
 			[
+				{
+					"directoryIndex" : 0,
+					"id" : "PNG::PNG::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-PNG__PNG-RelWithDebInfo-218284a83f81cf28439a.json",
+					"name" : "PNG::PNG",
+					"projectIndex" : 0
+				},
 				{
 					"directoryIndex" : 0,
 					"id" : "SDL2::SDL2::@6890427a1f51a3e7e1df",
@@ -284,6 +372,20 @@
 					"jsonFile" : "target-SDL2__SDL2main-RelWithDebInfo-d569efc188704cda32cc.json",
 					"name" : "SDL2::SDL2main",
 					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SDL2_image::SDL2_image::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SDL2_image__SDL2_image-RelWithDebInfo-0add434e6a8129143c88.json",
+					"name" : "SDL2_image::SDL2_image",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ZLIB::ZLIB::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ZLIB__ZLIB-RelWithDebInfo-5f2cdc5ca73dbea7a6be.json",
+					"name" : "ZLIB::ZLIB",
+					"projectIndex" : 0
 				}
 			],
 			"directories" : 
@@ -292,7 +394,10 @@
 					"abstractTargetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3,
+						4
 					],
 					"build" : ".",
 					"jsonFile" : "directory-.-RelWithDebInfo-f040eec181a89de70dbe.json",
@@ -317,7 +422,10 @@
 					"abstractTargetIndexes" : 
 					[
 						0,
-						1
+						1,
+						2,
+						3,
+						4
 					],
 					"directoryIndexes" : 
 					[
@@ -337,7 +445,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ALL_BUILD-RelWithDebInfo-2c6e14be9dffdf8a3afa.json",
+					"jsonFile" : "target-ALL_BUILD-RelWithDebInfo-da4ee503516e423498b5.json",
 					"name" : "ALL_BUILD",
 					"projectIndex" : 0
 				},
@@ -351,7 +459,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "spriteforge::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-spriteforge-RelWithDebInfo-ded8250420e4b3b11978.json",
+					"jsonFile" : "target-spriteforge-RelWithDebInfo-b5550574b2f6c7f19b0a.json",
 					"name" : "spriteforge",
 					"projectIndex" : 0
 				}

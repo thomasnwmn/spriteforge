@@ -1,0 +1,8 @@
+================================================================================
+Linker Errors
+Generated: 2026-07-21T03:07:07.531Z
+Total Errors: 1
+================================================================================
+
+[LNK1168] (MSVC)
+cannot open C:\Users\tnewm\OneDrive\Documents\Github\spriteforge\build\Debug\spriteforge.exe for writing [C:\Users\tnewm\OneDrive\Documents\Github\spriteforge\build\spriteforge.vcxproj]
