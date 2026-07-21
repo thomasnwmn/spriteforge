@@ -1,3 +1,0 @@
-C:/Users/tnewm/OneDrive/Documents/Github/spriteforge/build/CMakeFiles/spriteforge.dir
-C:/Users/tnewm/OneDrive/Documents/Github/spriteforge/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/tnewm/OneDrive/Documents/Github/spriteforge/build/CMakeFiles/ZERO_CHECK.dir
