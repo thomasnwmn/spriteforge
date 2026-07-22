@@ -4,8 +4,6 @@ SpriteForge is a custom 2D Game Engine written in C, using SDL2 and CMake!
 
 ## Engine Development Checklist
 
-Building an engine is a marathon, not a sprint. Here are the 10 core systems we need to build for a complete 2D game engine, in roughly the order we should tackle them:
-
 - [x] **1. Core Application & Game Loop**
   - Window creation and management using SDL2.
   - The main game loop (Process Input -> Update -> Render).
