@@ -25,12 +25,12 @@ Building an engine is a marathon, not a sprint. Here are the 10 core systems we 
   - Loading assets from disk (images, fonts, audio files).
   - Caching assets in a hash map/dictionary so they aren't loaded into memory multiple times.
 
-- [ ] **5. Entity & Game Object System**
-  - A way to represent things in the game world (player, enemies, bullets).
-  - Can be a simple array of objects, or a more robust Entity-Component-System (ECS) tailored for C.
+- [x] **5. Entity & Game Object System**
+  - A base Entity struct or class to represent objects.
+  - Spawning and destroying entities.
 
-- [ ] **6. Physics & Collision Detection**
-  - Basic math structures (Vectors).
+- [x] **6. Physics & Collision Detection**
+  - AABB (Axis-Aligned Bounding Box) collision detection.
   - Collision shapes (AABB - Axis-Aligned Bounding Boxes, Circles).
   - Detecting overlaps and resolving them (stopping players from walking through walls).
 

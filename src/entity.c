@@ -24,6 +24,12 @@ Entity* entity_create(float x, float y, float w, float h, float speed, bool is_s
             entity_pool[i].width = w;
             entity_pool[i].height = h;
             entity_pool[i].speed = speed;
+            
+            // Default physics to 0 so it doesn't ruin top-down games
+            entity_pool[i].vx = 0.0f;
+            entity_pool[i].vy = 0.0f;
+            entity_pool[i].gravity = 0.0f;
+            
             entity_pool[i].texture = tex;
             
             entity_pool[i].current_frame = 0;
@@ -43,6 +49,18 @@ Entity* entity_create(float x, float y, float w, float h, float speed, bool is_s
 void entity_update_all(float delta_time) {
     for (int i = 0; i < MAX_ENTITIES; i++) {
         if (!entity_pool[i].active) continue;
+
+        // --- PHYSICS UPDATE ---
+        // 1. Apply gravity to the Y velocity
+        if (entity_pool[i].gravity > 0.0f) {
+            entity_pool[i].vy += entity_pool[i].gravity * delta_time;
+        }
+
+        // 2. If the entity has velocity, move it!
+        if (entity_pool[i].vx != 0.0f || entity_pool[i].vy != 0.0f) {
+            entity_move(&entity_pool[i], entity_pool[i].vx * delta_time, entity_pool[i].vy * delta_time);
+        }
+        // ----------------------
 
         // if this entity has an animation
         if (entity_pool[i].max_frames > 1) {

@@ -101,7 +101,7 @@ int main(int argc, char* argv[]) {
         float move_x = 0.0f;
         float move_y = 0.0f;
 
-        if (input_get_action_down(ACTION_JUMP)) printf("The player JUMPED!\n");
+        if (input_get_action_down(ACTION_JUMP)) printf("The player JUMPED!\n"); // if you wanted to add jumping physics, you would add player->gravity=9.8f; and play->vy = -500.0f
 
         if (input_get_action(ACTION_MOVE_LEFT)) move_x -= player->speed * delta_time;
         // move right

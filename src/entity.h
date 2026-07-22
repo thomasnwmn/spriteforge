@@ -10,8 +10,14 @@ typedef struct {
     float x; // x position in the world
     float y; // y position in the world
     float width, height; // size of the entity
-    float speed; // movement speed of the entity
-    SDL_Texture* texture; // texture to render for this entity
+    float speed;       // Movement speed
+    
+    // --- Physics ---
+    float vx, vy;      // Velocity (Direction + Speed)
+    float gravity;     // Gravity force (e.g. 9.8)
+    // ---------------
+    
+    SDL_Texture* texture; // The image to drawender for this entity
 
     int current_frame;
     int max_frames;
