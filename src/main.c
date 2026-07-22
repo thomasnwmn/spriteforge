@@ -47,9 +47,7 @@ int main(int argc, char* argv[]) {
         printf("Error creating renderer: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
         SDL_Quit();
-        return -1;
     }
-
     is_running = true;
 
     Uint64 previous_ticks = SDL_GetPerformanceCounter();
@@ -65,15 +63,15 @@ int main(int argc, char* argv[]) {
     float camera_x = 0.0f;
     float camera_y = 0.0f;
 
-    // grab the player texture from the assets folder, and load it into memory (and cache for later use)
-    SDL_Texture* player_texture = asset_get_texture(renderer, "assets/player.png");
+    // loading player textures
+    SDL_Texture* player_texture = asset_get_texture(renderer, "assets/Soldier_Idle.png");
+    SDL_Texture* player_texture2 = asset_get_texture(renderer, "assets/player.png");
 
-    // CREATE OUR ENTITIES ONCE BEFORE THE GAME STARTS!
-    Entity* player = entity_create(400.0f, 300.0f, (float)PLAYER_WIDTH, (float)PLAYER_HEIGHT, 300.0f, player_texture);
+    Entity* player = entity_create(400.0f, 300.0f, 40.0f, 50.0f, 300.0f, true, 6, 0.15f, 100, 2.5f, player_texture);
     
-    entity_create(100.0f, 100.0f, 50.0f, 50.0f, 0.0f, player_texture);
-    entity_create(600.0f, 150.0f, 50.0f, 50.0f, 0.0f, player_texture);
-    entity_create(250.0f, 500.0f, 50.0f, 50.0f, 0.0f, player_texture);
+    entity_create(100.0f, 100.0f, 100.0f, 100.0f, 0.0f, true, 1, 0.0f, 100, 0.1236f, player_texture2);
+    entity_create(600.0f, 150.0f, 100.0f, 100.0f, 0.0f, true, 1, 0.0f, 100, 0.1236f, player_texture2);
+    entity_create(250.0f, 500.0f, 100.0f, 100.0f, 0.0f, true, 1, 0.0f, 100, 0.1236f, player_texture2);
 
     while (is_running) {
         Uint64 current_ticks = SDL_GetPerformanceCounter();
@@ -98,39 +96,26 @@ int main(int argc, char* argv[]) {
         input_update(); // Update the input system
 
         // update game objects here using delta_time
+        entity_update_all(delta_time); // Update all active entities
 
-        if (input_get_action_down(ACTION_JUMP)) {
-            printf("The player JUMPED!\n");
-        }
+        float move_x = 0.0f;
+        float move_y = 0.0f;
 
-        // move left
-        if (input_get_action(ACTION_MOVE_LEFT)) {
-            player->x -= player->speed * delta_time;
-        }
+        if (input_get_action_down(ACTION_JUMP)) printf("The player JUMPED!\n");
 
+        if (input_get_action(ACTION_MOVE_LEFT)) move_x -= player->speed * delta_time;
         // move right
-        if (input_get_action(ACTION_MOVE_RIGHT)) {
-            player->x += player->speed * delta_time;
-        }
+        if (input_get_action(ACTION_MOVE_RIGHT)) move_x += player->speed * delta_time;
 
-        if (input_get_action(ACTION_MOVE_UP)) {
-            player->y -= player->speed * delta_time;
-        }
+        if (input_get_action(ACTION_MOVE_UP)) move_y -= player->speed * delta_time;
 
-        if (input_get_action(ACTION_MOVE_DOWN)) {
-            player->y += player->speed * delta_time;
-        }
+        if (input_get_action(ACTION_MOVE_DOWN)) move_y += player->speed * delta_time;
 
-        camera_x = player->x - 400.0f + ((float)PLAYER_WIDTH / 2.0f); // 50 is player width
-        camera_y = player->y - 300.0f + ((float)PLAYER_HEIGHT / 2.0f); // 50 is player height
+        // Ask the entity system to safely move the player!
+        entity_move(player, move_x, move_y);
 
-        /* if (input_get_key(SDL_SCANCODE_SPACE)) {
-            printf("Spacebar is being held down!\n");
-        } */
-
-        /* if (input_get_key_down(SDL_SCANCODE_W)) {
-            printf("W key was just pressed!\n");
-        } */
+        camera_x = player->x - 400.0f + (player->width / 2.0f);
+        camera_y = player->y - 300.0f + (player->height / 2.0f);
 
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 

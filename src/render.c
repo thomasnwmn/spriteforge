@@ -18,15 +18,14 @@ void render_draw_rect(SDL_Renderer* renderer, float x, float y, float width, flo
 
 }
 
-void render_draw_texture(SDL_Renderer* renderer, SDL_Texture* texture, float x, float y, float width, float height, float cam_x, float cam_y) {
-    if (!texture) return; // if texture is NULL, do nothing
+void render_draw_texture(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Rect* src_rect, float x, float y, float width, float height, float cam_x, float cam_y) {
+    if (!texture) return; 
 
     SDL_Rect dest_rect;
-    //apply camera offsets
     dest_rect.x = (int)(x - cam_x);
     dest_rect.y = (int)(y - cam_y);
     dest_rect.w = (int)width;
     dest_rect.h = (int)height;
 
-    SDL_RenderCopy(renderer, texture, NULL, &dest_rect);
+    SDL_RenderCopy(renderer, texture, src_rect, &dest_rect);
 }
