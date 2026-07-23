@@ -1,4 +1,8 @@
 #include "render.h"
+#include <stdio.h>
+
+float engine_camera_x = 0.0f;
+float engine_camera_y = 0.0f;
 
 void render_draw_rect(SDL_Renderer* renderer, float x, float y, float width, float height, float cam_x, float cam_y, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
     // First, create a rectangle struct using our float coordinates (we cast to an int since SDL renders full pixels)

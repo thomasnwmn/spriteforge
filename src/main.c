@@ -5,6 +5,10 @@
 #include "render.h"
 #include "asset_manager.h"
 #include "entity.h"
+#include "scripting.h"
+#include "launcher.h"
+#include <SDL_ttf.h>
+#include <direct.h> // For _chdir on Windows
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -12,6 +16,13 @@
 #define PLAYER_HEIGHT 100
 
 int main(int argc, char* argv[]) {
+
+    // --- SCENE MANAGER (STATE MACHINE) ---
+    // This tracks if we are looking at the Menu, or playing the game!
+    enum EngineState { STATE_LAUNCHER, STATE_PLAYING };
+    enum EngineState current_state = STATE_LAUNCHER;
+
+    // We stay in the root folder so the Launcher can see 'example_projects'!
 
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
@@ -57,21 +68,23 @@ int main(int argc, char* argv[]) {
     asset_init(); // Initialize the asset manager
     entity_init(); // Initialize the entity system
     input_set_default_keybinds(); // Set default keybinds for actions
-
-
-    // --- Camera Variables ---
-    float camera_x = 0.0f;
-    float camera_y = 0.0f;
-
-    // loading player textures
-    SDL_Texture* player_texture = asset_get_texture(renderer, "assets/Soldier_Idle.png");
-    SDL_Texture* player_texture2 = asset_get_texture(renderer, "assets/player.png");
-
-    Entity* player = entity_create(400.0f, 300.0f, 40.0f, 50.0f, 300.0f, true, 6, 0.15f, 100, 2.5f, player_texture);
+    script_init(renderer);        // Start the Lua Virtual Machine
     
-    entity_create(100.0f, 100.0f, 100.0f, 100.0f, 0.0f, true, 1, 0.0f, 100, 0.1236f, player_texture2);
-    entity_create(600.0f, 150.0f, 100.0f, 100.0f, 0.0f, true, 1, 0.0f, 100, 0.1236f, player_texture2);
-    entity_create(250.0f, 500.0f, 100.0f, 100.0f, 0.0f, true, 1, 0.0f, 100, 0.1236f, player_texture2);
+    // --- TTF FONT INITIALIZATION ---
+    if (TTF_Init() == -1) {
+        printf("Error initializing TTF: %s\n", TTF_GetError());
+        return -1;
+    }
+    // We are borrowing the default Arial font from the Windows OS folder!
+    TTF_Font* ui_font = TTF_OpenFont("C:\\Windows\\Fonts\\arial.ttf", 24);
+    if (!ui_font) {
+        printf("Could not load Arial font!\n");
+    }
+    
+    launcher_init(); // Tell the launcher to scan the directories for games!
+    // -------------------------------
+
+    // Camera variables are now in render.h and controlled by Lua!
 
     while (is_running) {
         Uint64 current_ticks = SDL_GetPerformanceCounter();
@@ -93,46 +106,59 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        input_update(); // Update the input system
+        input_update(); // Process keyboard state
 
-        // update game objects here using delta_time
-        entity_update_all(delta_time); // Update all active entities
-
-        float move_x = 0.0f;
-        float move_y = 0.0f;
-
-        if (input_get_action_down(ACTION_JUMP)) printf("The player JUMPED!\n"); // if you wanted to add jumping physics, you would add player->gravity=9.8f; and play->vy = -500.0f
-
-        if (input_get_action(ACTION_MOVE_LEFT)) move_x -= player->speed * delta_time;
-        // move right
-        if (input_get_action(ACTION_MOVE_RIGHT)) move_x += player->speed * delta_time;
-
-        if (input_get_action(ACTION_MOVE_UP)) move_y -= player->speed * delta_time;
-
-        if (input_get_action(ACTION_MOVE_DOWN)) move_y += player->speed * delta_time;
-
-        // Ask the entity system to safely move the player!
-        entity_move(player, move_x, move_y);
-
-        camera_x = player->x - 400.0f + (player->width / 2.0f);
-        camera_y = player->y - 300.0f + (player->height / 2.0f);
-
-        SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
-
+        // ----------------------------------------------------
+        // THE SCENE MANAGER
+        // ----------------------------------------------------
+        // ALWAYS clear the screen at the start of the frame!
+        if (current_state == STATE_LAUNCHER) {
+            SDL_SetRenderDrawColor(renderer, 30, 30, 50, 255);
+        } else {
+            SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
+        }
         SDL_RenderClear(renderer);
 
-        // draw game objects here
-        // represents a tree or a building in the world
-        render_draw_rect(renderer, 0, 0, 100, 100, camera_x, camera_y, 0, 255, 0, 255); // Draw a green square at the top-left corner
+        if (current_state == STATE_LAUNCHER) {
+            
+            // Draw the Launcher UI and check if a project was clicked!
+            char selected_project[256];
+            if (launcher_update_and_render(renderer, ui_font, selected_project)) {
+                
+                // IF WE CLICKED A PROJECT:
+                // 1. Change the root directory to that project
+                _chdir(selected_project);
+                
+                // 2. Load the game's Lua script!
+                script_load_file("game.lua");
+                
+                // 3. Switch the engine state to PLAYING!
+                current_state = STATE_PLAYING;
+            }
 
-        entity_render_all(renderer, camera_x, camera_y); // Render all active entities
+        } else if (current_state == STATE_PLAYING) {
+            
+            // update game objects here using delta_time
+            entity_update_all(delta_time); 
+            
+            
+            // TELL LUA TO RUN THE GAME LOGIC!
+            script_update(delta_time);
 
-        // swap the buffer
-        SDL_RenderPresent(renderer);
+            // Lua will have updated engine_camera_x and engine_camera_y by now!
+            entity_render_all(renderer, engine_camera_x, engine_camera_y); // render all entities
+        }
+        
+        SDL_RenderPresent(renderer); // swap buffers
     }
 
     SDL_DestroyRenderer(renderer);
+    script_cleanup(); // Clean up Lua VM
     asset_cleanup(); // Clean up loaded textures
+    
+    if (ui_font) TTF_CloseFont(ui_font);
+    TTF_Quit(); // Clean up Font System
+    
     SDL_DestroyWindow(window);
     SDL_Quit();
 

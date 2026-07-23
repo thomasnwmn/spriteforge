@@ -2,7 +2,12 @@
 #define RENDER_H
 
 #include <SDL.h>
+#include <stdbool.h>
 
+extern float engine_camera_x;
+extern float engine_camera_y;
+
+void render_init(void);
 void render_draw_rect(SDL_Renderer* renderer, float x, float y, float width, float height, float cam_x, float cam_y, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 // Draw a texture to the screen!
