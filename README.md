@@ -49,3 +49,13 @@ Building an engine is a marathon, not a sprint. Here are the 10 core systems we 
 
 - [ ] **10. Event / Messaging System**
   - Allowing different parts of the engine to communicate without being tangled together (e.g., the collision system broadcasts a "PlayerHit" event, and the audio system listens for it to play a sound).
+
+## Future plans
+
+- [ ] **World generation**
+  - For a minecraft style game maybe?
+  - Horror coop style game (preset maps but randomly generated each level to make each level different/harder) (factory/forest, randomly generated each time)
+
+- [ ] **NPC Pathfinding**
+  - Entities following a predefined route?
+  - Entities tracking player (enemies?)
