@@ -1,5 +1,6 @@
 #include "entity.h"
 #include "render.h"
+#include <string.h>
 
 #define MAX_ENTITIES 100
 
@@ -12,7 +13,7 @@ void entity_init(void) {
     }
 }
 
-Entity* entity_create(float x, float y, float w, float h, float speed, bool is_solid, int max_frames, float anim_speed, int frame_width, float scale, SDL_Texture* tex) {
+Entity* entity_create(float x, float y, float w, float h, float speed, bool is_solid, int max_frames, float anim_speed, int frame_width, float scale, SDL_Texture* tex, const char* sprite_path) {
     // find first inactive slot in array
     for (int i = 0; i < MAX_ENTITIES; i++) {
         if (!entity_pool[i].active) {
@@ -31,6 +32,12 @@ Entity* entity_create(float x, float y, float w, float h, float speed, bool is_s
             entity_pool[i].gravity = 0.0f;
             
             entity_pool[i].texture = tex;
+            if (sprite_path) {
+                strncpy(entity_pool[i].sprite_path, sprite_path, sizeof(entity_pool[i].sprite_path) - 1);
+                entity_pool[i].sprite_path[sizeof(entity_pool[i].sprite_path) - 1] = '\0';
+            } else {
+                entity_pool[i].sprite_path[0] = '\0';
+            }
             
             entity_pool[i].current_frame = 0;
             entity_pool[i].max_frames = max_frames;
@@ -46,17 +53,37 @@ Entity* entity_create(float x, float y, float w, float h, float speed, bool is_s
     return NULL; // no free slots
 }
 
+void entity_set_sprite(Entity* e, SDL_Texture* tex, const char* sprite_path, int max_frames, float anim_speed, int frame_width) {
+    if (!e) return;
+    
+    // Only update if the texture actually changes, or you can just forcefully update
+    // But forcing update is good to restart animations
+    e->texture = tex;
+    if (sprite_path) {
+        strncpy(e->sprite_path, sprite_path, sizeof(e->sprite_path) - 1);
+        e->sprite_path[sizeof(e->sprite_path) - 1] = '\0';
+    } else {
+        e->sprite_path[0] = '\0';
+    }
+    e->max_frames = max_frames;
+    e->anim_speed = anim_speed;
+    e->frame_width = frame_width;
+    
+    // Reset animation state
+    e->current_frame = 0;
+    e->frame_timer = 0.0f;
+}
+
 void entity_update_all(float delta_time) {
     for (int i = 0; i < MAX_ENTITIES; i++) {
         if (!entity_pool[i].active) continue;
 
-        // --- PHYSICS UPDATE ---
-        // 1. Apply gravity to the Y velocity
+        // Apply gravity to the Y velocity
         if (entity_pool[i].gravity > 0.0f) {
             entity_pool[i].vy += entity_pool[i].gravity * delta_time;
         }
 
-        // 2. If the entity has velocity, move it!
+        // If the entity has velocity, move it!
         if (entity_pool[i].vx != 0.0f || entity_pool[i].vy != 0.0f) {
             entity_move(&entity_pool[i], entity_pool[i].vx * delta_time, entity_pool[i].vy * delta_time);
         }

@@ -17,12 +17,10 @@
 
 int main(int argc, char* argv[]) {
 
-    // --- SCENE MANAGER (STATE MACHINE) ---
+    // --- SCENE MANAGER ---
     // This tracks if we are looking at the Menu, or playing the game!
     enum EngineState { STATE_LAUNCHER, STATE_PLAYING };
     enum EngineState current_state = STATE_LAUNCHER;
-
-    // We stay in the root folder so the Launcher can see 'example_projects'!
 
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
@@ -37,9 +35,9 @@ int main(int argc, char* argv[]) {
         "SpriteForge Engine",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        800,
-        600,
-        0
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        SDL_WINDOW_RESIZABLE
     );
 
     if (!window) {
@@ -59,6 +57,9 @@ int main(int argc, char* argv[]) {
         SDL_DestroyWindow(window);
         SDL_Quit();
     }
+    
+    // Automatically scale the rendering when the window resizes, maintaining the 800x600 aspect ratio!
+    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
     is_running = true;
 
     Uint64 previous_ticks = SDL_GetPerformanceCounter();
@@ -75,16 +76,20 @@ int main(int argc, char* argv[]) {
         printf("Error initializing TTF: %s\n", TTF_GetError());
         return -1;
     }
-    // We are borrowing the default Arial font from the Windows OS folder!
+    // borrowing the default Arial font from the Windows OS folder
     TTF_Font* ui_font = TTF_OpenFont("C:\\Windows\\Fonts\\arial.ttf", 24);
     if (!ui_font) {
         printf("Could not load Arial font!\n");
     }
     
-    launcher_init(); // Tell the launcher to scan the directories for games!
+    launcher_init(); // tell the launcher to scan the directories for games
     // -------------------------------
 
-    // Camera variables are now in render.h and controlled by Lua!
+    
+    char engine_root_path[512];
+    _getcwd(engine_root_path, sizeof(engine_root_path));
+    Uint32 last_esc_time = 0;
+    bool show_esc_message = false;
 
     while (is_running) {
         Uint64 current_ticks = SDL_GetPerformanceCounter();
@@ -101,17 +106,37 @@ int main(int argc, char* argv[]) {
 
             if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    is_running = false;
+                    if (current_state == STATE_LAUNCHER) {
+                        is_running = false;
+                    } else if (current_state == STATE_PLAYING) {
+                        Uint32 current_ms = SDL_GetTicks();
+                        if (current_ms - last_esc_time < 2000) {
+                            // Double tap!
+                            current_state = STATE_LAUNCHER;
+                            show_esc_message = false;
+                            
+                            script_cleanup();
+                            asset_cleanup();
+                            entity_init(); // Reset all entities
+                            _chdir(engine_root_path);
+                            
+                            asset_init();
+                            script_init(renderer); // Re-initialize Lua
+                        } else {
+                            last_esc_time = current_ms;
+                            show_esc_message = true;
+                        }
+                    }
                 }
             }
         }
 
-        input_update(); // Process keyboard state
+        input_update(); // process input events
 
         // ----------------------------------------------------
         // THE SCENE MANAGER
         // ----------------------------------------------------
-        // ALWAYS clear the screen at the start of the frame!
+        // always clear screen at the start of the frame
         if (current_state == STATE_LAUNCHER) {
             SDL_SetRenderDrawColor(renderer, 30, 30, 50, 255);
         } else {
@@ -121,18 +146,15 @@ int main(int argc, char* argv[]) {
 
         if (current_state == STATE_LAUNCHER) {
             
-            // Draw the Launcher UI and check if a project was clicked!
+            // drawing launcher ui
             char selected_project[256];
             if (launcher_update_and_render(renderer, ui_font, selected_project)) {
                 
-                // IF WE CLICKED A PROJECT:
-                // 1. Change the root directory to that project
+                // if project is clicked, select root directory, load the Lua script, and switch to PLAYING state
                 _chdir(selected_project);
                 
-                // 2. Load the game's Lua script!
                 script_load_file("game.lua");
                 
-                // 3. Switch the engine state to PLAYING!
                 current_state = STATE_PLAYING;
             }
 
@@ -142,11 +164,19 @@ int main(int argc, char* argv[]) {
             entity_update_all(delta_time); 
             
             
-            // TELL LUA TO RUN THE GAME LOGIC!
+            // tell lua to run game logic
             script_update(delta_time);
 
-            // Lua will have updated engine_camera_x and engine_camera_y by now!
+            // lua will have updated engine_camera_x and engine_camera_y by now
             entity_render_all(renderer, engine_camera_x, engine_camera_y); // render all entities
+            
+            if (show_esc_message) {
+                if (SDL_GetTicks() - last_esc_time < 2000) {
+                    render_draw_text(renderer, (struct _TTF_Font*)ui_font, "Press ESC again to return to menu", 10, 10, 255, 255, 255, 255);
+                } else {
+                    show_esc_message = false;
+                }
+            }
         }
         
         SDL_RenderPresent(renderer); // swap buffers

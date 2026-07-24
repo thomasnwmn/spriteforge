@@ -18,20 +18,24 @@ typedef struct {
     // ---------------
     
     SDL_Texture* texture; // The image to drawender for this entity
+    char sprite_path[256]; // The file path of the current sprite image
 
     int current_frame;
     int max_frames;
     float frame_timer;
     float anim_speed;
     int frame_width;
-    float scale; // NEW: How big to draw the image relative to the hitbox
+    float scale;
 } Entity;
 
 // initialize the entity system
 void entity_init(void);
 
 // Ask the engine to give us a new blank entity to use
-Entity* entity_create(float x, float y, float hitbox_w, float hitbox_h, float speed, bool is_solid, int max_frames, float anim_speed, int frame_width, float scale, SDL_Texture* tex);
+Entity* entity_create(float x, float y, float hitbox_w, float hitbox_h, float speed, bool is_solid, int max_frames, float anim_speed, int frame_width, float scale, SDL_Texture* tex, const char* sprite_path);
+
+// Change the sprite/animation of an entity
+void entity_set_sprite(Entity* e, SDL_Texture* tex, const char* sprite_path, int max_frames, float anim_speed, int frame_width);
 
 // update all active entities
 void entity_update_all(float delta_time);

@@ -8,7 +8,7 @@
 #include "input.h"
 #include "render.h"
 
-// This pointer represents our running Lua Virtual Machine!
+// This pointer represents our running Lua Virtual Machine
 static lua_State* L = NULL;
 static SDL_Renderer* engine_renderer = NULL;
 
@@ -29,9 +29,9 @@ static int l_CreateEntity(lua_State* L) {
     const char* filepath = lua_tostring(L, 11);
 
     SDL_Texture* tex = asset_get_texture(engine_renderer, filepath);
-    Entity* new_ent = entity_create(x, y, w, h, speed, is_solid, max_frames, anim_speed, frame_w, scale, tex);
+    Entity* new_ent = entity_create(x, y, w, h, speed, is_solid, max_frames, anim_speed, frame_w, scale, tex, filepath);
     
-    // Give the memory address (pointer) back to Lua so it can save it in a variable!
+    // Give the memory address (pointer) back to Lua so it can save it in a variable
     lua_pushlightuserdata(L, new_ent);
     return 1; // We return 1 value to Lua
 }
@@ -62,6 +62,33 @@ static int l_SetCameraPosition(lua_State* L) {
     return 0;
 }
 
+// Lua calls this: SetEntitySprite(entity_ptr, "image.png", max_frames, anim_speed, frame_width)
+static int l_SetEntitySprite(lua_State* L) {
+    Entity* ent = (Entity*)lua_touserdata(L, 1); // Get the pointer from Lua
+    const char* filepath = lua_tostring(L, 2);
+    int max_frames = (int)lua_tonumber(L, 3);
+    float anim_speed = (float)lua_tonumber(L, 4);
+    int frame_w = (int)lua_tonumber(L, 5);
+    
+    if (ent && filepath) {
+        SDL_Texture* tex = asset_get_texture(engine_renderer, filepath);
+        if (tex) {
+            entity_set_sprite(ent, tex, filepath, max_frames, anim_speed, frame_w);
+        }
+    }
+    return 0;
+}
+
+// Lua calls this: GetEntitySprite(entity_ptr)
+static int l_GetEntitySprite(lua_State* L) {
+    Entity* ent = (Entity*)lua_touserdata(L, 1);
+    if (ent) {
+        lua_pushstring(L, ent->sprite_path);
+        return 1;
+    }
+    return 0;
+}
+
 // Lua calls this: IsActionDown(action_id)
 static int l_IsActionDown(lua_State* L) {
     int action = (int)lua_tonumber(L, 1);
@@ -75,18 +102,20 @@ static int l_IsActionDown(lua_State* L) {
 void script_init(SDL_Renderer* renderer) {
     engine_renderer = renderer;
 
-    // 1. Boot up the Virtual Machine!
+    // Boot up the Virtual Machine!
     L = luaL_newstate();
 
-    // 2. Load the standard Lua libraries
+    // Load the standard Lua libraries
     luaL_openlibs(L);
     
-    // 3. Register our Bridge Functions so Lua can use them!
+    // Register our Bridge Functions so Lua can use them!
     lua_register(L, "CreateEntity", l_CreateEntity);
     lua_register(L, "MoveEntity", l_MoveEntity);
     lua_register(L, "IsActionDown", l_IsActionDown);
     lua_register(L, "GetEntityPosition", l_GetEntityPosition);
     lua_register(L, "SetCameraPosition", l_SetCameraPosition);
+    lua_register(L, "SetEntitySprite", l_SetEntitySprite);
+    lua_register(L, "GetEntitySprite", l_GetEntitySprite);
 
     printf("Lua scripting engine initialized.\n");
 }
