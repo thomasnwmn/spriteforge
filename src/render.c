@@ -63,3 +63,26 @@ void render_draw_text(SDL_Renderer* renderer, struct _TTF_Font* font, const char
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(surface);
 }
+
+void render_draw_background(SDL_Renderer* renderer, SDL_Texture* texture, float cam_x, float cam_y, float parallax) {
+    if (!texture) return;
+    
+    int tex_w, tex_h;
+    SDL_QueryTexture(texture, NULL, NULL, &tex_w, &tex_h);
+    
+    float bg_x = cam_x * parallax;
+    float bg_y = cam_y * parallax;
+    
+    int start_x = -((int)bg_x % tex_w);
+    if (start_x > 0) start_x -= tex_w;
+    
+    int start_y = -((int)bg_y % tex_h);
+    if (start_y > 0) start_y -= tex_h;
+    
+    for (int y = start_y; y < 600; y += tex_h) {
+        for (int x = start_x; x < 800; x += tex_w) {
+            SDL_Rect dest = { x, y, tex_w, tex_h };
+            SDL_RenderCopy(renderer, texture, NULL, &dest);
+        }
+    }
+}

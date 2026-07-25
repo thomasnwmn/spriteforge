@@ -12,6 +12,11 @@
 static lua_State* L = NULL;
 static SDL_Renderer* engine_renderer = NULL;
 
+#include "scene.h"
+#include "audio.h"
+#include "ui.h"
+#include "events.h"
+
 // --- THE C/LUA BRIDGE FUNCTIONS ---
 
 // Lua calls this: CreateEntity(x, y, w, h, speed, is_solid, max_frames, anim_speed, frame_w, scale, "image.png")
@@ -62,6 +67,21 @@ static int l_SetCameraPosition(lua_State* L) {
     return 0;
 }
 
+static int l_DrawBackground(lua_State* L) {
+    const char* filepath = lua_tostring(L, 1);
+    float parallax = 1.0f;
+    if (lua_gettop(L) >= 2) {
+        parallax = (float)lua_tonumber(L, 2);
+    }
+    if (filepath) {
+        SDL_Texture* tex = asset_get_texture(engine_renderer, filepath);
+        if (tex) {
+            render_draw_background(engine_renderer, tex, engine_camera_x, engine_camera_y, parallax);
+        }
+    }
+    return 0;
+}
+
 // Lua calls this: SetEntitySprite(entity_ptr, "image.png", max_frames, anim_speed, frame_width)
 static int l_SetEntitySprite(lua_State* L) {
     Entity* ent = (Entity*)lua_touserdata(L, 1); // Get the pointer from Lua
@@ -97,6 +117,92 @@ static int l_IsActionDown(lua_State* L) {
     lua_pushboolean(L, is_down);
     return 1;
 }
+
+static int l_ChangeScene(lua_State* L) {
+    const char* filepath = lua_tostring(L, 1);
+    if (filepath) scene_change(filepath);
+    return 0;
+}
+
+static int l_QuitToLauncher(lua_State* L) {
+    scene_quit_to_launcher();
+    return 0;
+}
+
+static int l_DestroyEntity(lua_State* L) {
+    Entity* ent = (Entity*)lua_touserdata(L, 1);
+    if (ent) entity_destroy(ent);
+    return 0;
+}
+
+static int l_PlaySFX(lua_State* L) {
+    const char* path = lua_tostring(L, 1);
+    if (path) audio_play_sfx(path);
+    return 0;
+}
+
+static int l_PlayBGM(lua_State* L) {
+    const char* path = lua_tostring(L, 1);
+    if (path) audio_play_bgm(path);
+    return 0;
+}
+
+static int l_StopBGM(lua_State* L) {
+    audio_stop_bgm();
+    return 0;
+}
+
+static int l_SetVolume(lua_State* L) {
+    float vol = (float)lua_tonumber(L, 1);
+    audio_set_volume(vol);
+    return 0;
+}
+
+static int l_DrawText(lua_State* L) {
+    const char* text = lua_tostring(L, 1);
+    float x = (float)lua_tonumber(L, 2);
+    float y = (float)lua_tonumber(L, 3);
+    Uint8 r = (Uint8)lua_tonumber(L, 4);
+    Uint8 g = (Uint8)lua_tonumber(L, 5);
+    Uint8 b = (Uint8)lua_tonumber(L, 6);
+    Uint8 a = (Uint8)lua_tonumber(L, 7);
+    if (text) ui_draw_text(text, x, y, r, g, b, a);
+    return 0;
+}
+
+static int l_DrawHealthBar(lua_State* L) {
+    float x = (float)lua_tonumber(L, 1);
+    float y = (float)lua_tonumber(L, 2);
+    float w = (float)lua_tonumber(L, 3);
+    float h = (float)lua_tonumber(L, 4);
+    float pct = (float)lua_tonumber(L, 5);
+    Uint8 r = (Uint8)lua_tonumber(L, 6);
+    Uint8 g = (Uint8)lua_tonumber(L, 7);
+    Uint8 b = (Uint8)lua_tonumber(L, 8);
+    Uint8 a = (Uint8)lua_tonumber(L, 9);
+    ui_draw_health_bar(x, y, w, h, pct, r, g, b, a);
+    return 0;
+}
+
+static int l_DrawButton(lua_State* L) {
+    const char* text = lua_tostring(L, 1);
+    float x = (float)lua_tonumber(L, 2);
+    float y = (float)lua_tonumber(L, 3);
+    float w = (float)lua_tonumber(L, 4);
+    float h = (float)lua_tonumber(L, 5);
+    bool clicked = false;
+    if (text) clicked = ui_button(text, x, y, w, h);
+    lua_pushboolean(L, clicked);
+    return 1;
+}
+
+static int l_PublishEvent(lua_State* L) {
+    const char* name = lua_tostring(L, 1);
+    const char* payload = lua_tostring(L, 2);
+    if (name) script_push_event(name, payload);
+    return 0;
+}
+
 // ----------------------------------
 
 void script_init(SDL_Renderer* renderer) {
@@ -116,6 +222,19 @@ void script_init(SDL_Renderer* renderer) {
     lua_register(L, "SetCameraPosition", l_SetCameraPosition);
     lua_register(L, "SetEntitySprite", l_SetEntitySprite);
     lua_register(L, "GetEntitySprite", l_GetEntitySprite);
+    lua_register(L, "DrawBackground", l_DrawBackground);
+    
+    lua_register(L, "ChangeScene", l_ChangeScene);
+    lua_register(L, "QuitToLauncher", l_QuitToLauncher);
+    lua_register(L, "DestroyEntity", l_DestroyEntity);
+    lua_register(L, "PlaySFX", l_PlaySFX);
+    lua_register(L, "PlayBGM", l_PlayBGM);
+    lua_register(L, "StopBGM", l_StopBGM);
+    lua_register(L, "SetVolume", l_SetVolume);
+    lua_register(L, "DrawText", l_DrawText);
+    lua_register(L, "DrawHealthBar", l_DrawHealthBar);
+    lua_register(L, "DrawButton", l_DrawButton);
+    lua_register(L, "PublishEvent", l_PublishEvent);
 
     printf("Lua scripting engine initialized.\n");
 }
@@ -156,5 +275,26 @@ void script_update(float delta_time) {
         }
     } else {
         lua_pop(L, 1); // didnt write an update function
+    }
+}
+
+void script_push_event(const char* event_name, const char* payload) {
+    if (!L) return;
+    
+    lua_getglobal(L, "HandleEvent");
+    if (lua_isfunction(L, -1)) {
+        lua_pushstring(L, event_name);
+        if (payload) {
+            lua_pushstring(L, payload);
+        } else {
+            lua_pushnil(L);
+        }
+        
+        if (lua_pcall(L, 2, 0, 0) != LUA_OK) {
+            printf("Lua Event Error: %s\n", lua_tostring(L, -1));
+            lua_pop(L, 1);
+        }
+    } else {
+        lua_pop(L, 1);
     }
 }

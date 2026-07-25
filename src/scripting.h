@@ -12,4 +12,6 @@ void script_load_file(const char* filename);
 
 void script_update(float delta_time);
 
+void script_push_event(const char* event_name, const char* payload);
+
 #endif

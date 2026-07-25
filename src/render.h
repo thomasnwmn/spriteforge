@@ -8,6 +8,7 @@ extern float engine_camera_x;
 extern float engine_camera_y;
 
 void render_init(void);
+
 void render_draw_rect(SDL_Renderer* renderer, float x, float y, float width, float height, float cam_x, float cam_y, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 // Draw a texture to the screen!
@@ -16,5 +17,8 @@ void render_draw_texture(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Rect*
 // Draw text to the screen!
 struct _TTF_Font; // Forward declaration
 void render_draw_text(SDL_Renderer* renderer, struct _TTF_Font* font, const char* text, float x, float y, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+
+// Draw a repeating background!
+void render_draw_background(SDL_Renderer* renderer, SDL_Texture* texture, float cam_x, float cam_y, float parallax);
 
 #endif

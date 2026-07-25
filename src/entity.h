@@ -45,4 +45,6 @@ void entity_render_all(SDL_Renderer* renderer, float cam_x, float cam_y);
 
 void entity_move(Entity* entity, float dx, float dy);
 
+void entity_destroy(Entity* entity);
+
 #endif

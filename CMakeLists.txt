@@ -6,9 +6,10 @@ set(CMAKE_C_STANDARD 99)
 find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
 find_package(SDL2_ttf CONFIG REQUIRED)
+find_package(SDL2_mixer CONFIG REQUIRED)
 find_package(Lua REQUIRED)
 
-add_executable(spriteforge src/main.c src/input.c src/render.c src/asset_manager.c src/entity.c src/scripting.c src/launcher.c)
+add_executable(spriteforge WIN32 src/main.c src/input.c src/render.c src/asset_manager.c src/entity.c src/scripting.c src/launcher.c src/scene.c src/audio.c src/ui.c src/events.c)
 
 target_link_libraries(spriteforge
     PRIVATE
@@ -16,6 +17,7 @@ target_link_libraries(spriteforge
     $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
     $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
     $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+    $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>
     ${LUA_LIBRARIES}
 )
 

@@ -184,3 +184,9 @@ void entity_move(Entity* e, float dx, float dy) {
         }
     }
 }
+
+void entity_destroy(Entity* e) {
+    if (e) {
+        e->active = false;
+    }
+}

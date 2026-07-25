@@ -7,6 +7,10 @@
 #include "entity.h"
 #include "scripting.h"
 #include "launcher.h"
+#include "scene.h"
+#include "audio.h"
+#include "ui.h"
+#include "events.h"
 #include <SDL_ttf.h>
 #include <direct.h> // For _chdir on Windows
 
@@ -67,6 +71,8 @@ int main(int argc, char* argv[]) {
 
     input_init(); // Initialize the input system
     asset_init(); // Initialize the asset manager
+    audio_init(); // Initialize the audio system
+    events_init(); // Initialize the event system
     entity_init(); // Initialize the entity system
     input_set_default_keybinds(); // Set default keybinds for actions
     script_init(renderer);        // Start the Lua Virtual Machine
@@ -82,6 +88,8 @@ int main(int argc, char* argv[]) {
         printf("Could not load Arial font!\n");
     }
     
+    ui_init(renderer, ui_font);
+
     launcher_init(); // tell the launcher to scan the directories for games
     // -------------------------------
 
@@ -115,6 +123,7 @@ int main(int argc, char* argv[]) {
                             current_state = STATE_LAUNCHER;
                             show_esc_message = false;
                             
+                            audio_stop_bgm();
                             script_cleanup();
                             asset_cleanup();
                             entity_init(); // Reset all entities
@@ -185,6 +194,8 @@ int main(int argc, char* argv[]) {
     SDL_DestroyRenderer(renderer);
     script_cleanup(); // Clean up Lua VM
     asset_cleanup(); // Clean up loaded textures
+    audio_cleanup();
+    events_cleanup();
     
     if (ui_font) TTF_CloseFont(ui_font);
     TTF_Quit(); // Clean up Font System
