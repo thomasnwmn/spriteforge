@@ -45,6 +45,33 @@ void input_set_default_keybinds(void) {
     keybinds[ACTION_SHOOT] = SDL_SCANCODE_RETURN;
 }
 
+void input_bind_key(GameAction action, SDL_Scancode key) {
+    if (action >= 0 && action < MAX_ACTIONS) {
+        keybinds[action] = key;
+    }
+}
+
+SDL_Scancode input_parse_key_name(const char* key_name) {
+    if (!key_name) return SDL_SCANCODE_UNKNOWN;
+    
+    // Very simple lookup for common keys
+    if (strcmp(key_name, "space") == 0) return SDL_SCANCODE_SPACE;
+    if (strcmp(key_name, "enter") == 0 || strcmp(key_name, "return") == 0) return SDL_SCANCODE_RETURN;
+    if (strcmp(key_name, "escape") == 0) return SDL_SCANCODE_ESCAPE;
+    if (strcmp(key_name, "up") == 0) return SDL_SCANCODE_UP;
+    if (strcmp(key_name, "down") == 0) return SDL_SCANCODE_DOWN;
+    if (strcmp(key_name, "left") == 0) return SDL_SCANCODE_LEFT;
+    if (strcmp(key_name, "right") == 0) return SDL_SCANCODE_RIGHT;
+    if (strcmp(key_name, "w") == 0) return SDL_SCANCODE_W;
+    if (strcmp(key_name, "a") == 0) return SDL_SCANCODE_A;
+    if (strcmp(key_name, "s") == 0) return SDL_SCANCODE_S;
+    if (strcmp(key_name, "d") == 0) return SDL_SCANCODE_D;
+    if (strcmp(key_name, "z") == 0) return SDL_SCANCODE_Z;
+    if (strcmp(key_name, "x") == 0) return SDL_SCANCODE_X;
+    
+    return SDL_SCANCODE_UNKNOWN;
+}
+
 bool input_get_action(GameAction action) {
     if (action < 0 || action >= MAX_ACTIONS) {
         return false;

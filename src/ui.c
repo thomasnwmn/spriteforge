@@ -10,6 +10,12 @@ void ui_init(SDL_Renderer* renderer, TTF_Font* font) {
     ui_default_font = font;
 }
 
+void ui_set_font(TTF_Font* font) {
+    if (font) {
+        ui_default_font = font;
+    }
+}
+
 void ui_draw_text(const char* text, float x, float y, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
     if (!ui_renderer || !ui_default_font || !text) return;
     render_draw_text(ui_renderer, ui_default_font, text, x, y, r, g, b, a);

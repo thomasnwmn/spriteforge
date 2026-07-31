@@ -17,6 +17,12 @@ typedef enum {
 // setup default keyboard shortcuts
 void input_set_default_keybinds(void);
 
+// Bind a specific action to a scancode
+void input_bind_key(GameAction action, SDL_Scancode key);
+
+// Parse a string key name into a scancode (e.g., "space", "w", "up")
+SDL_Scancode input_parse_key_name(const char* key_name);
+
 bool input_get_action(GameAction action); // Check if an action is currently being held down
 
 // Check if an action was pressed this frame

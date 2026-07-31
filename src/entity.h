@@ -45,6 +45,12 @@ void entity_render_all(SDL_Renderer* renderer, float cam_x, float cam_y);
 
 void entity_move(Entity* entity, float dx, float dy);
 
+void entity_set_velocity(Entity* e, float vx, float vy);
+
+void entity_get_velocity(Entity* e, float* out_vx, float* out_vy);
+
+void entity_set_gravity(Entity* e, float gravity);
+
 void entity_destroy(Entity* entity);
 
 #endif

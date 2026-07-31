@@ -46,14 +46,16 @@ bool launcher_update_and_render(SDL_Renderer* renderer, TTF_Font* font, char* ou
     bool clicked = (mouse_state & SDL_BUTTON(SDL_BUTTON_LEFT));
 
     // 3. Draw the Logo Title Text (Centered at the top)
-    SDL_Color title_color = {255, 200, 50, 255};
-    SDL_Surface* title_surf = TTF_RenderText_Solid(font, "-- SPRITEFORGE ENGINE --", title_color);
-    if (title_surf) {
-        SDL_Texture* title_tex = SDL_CreateTextureFromSurface(renderer, title_surf);
-        SDL_Rect title_rect = {400 - (title_surf->w / 2), 20, title_surf->w, title_surf->h};
-        SDL_RenderCopy(renderer, title_tex, NULL, &title_rect);
-        SDL_DestroyTexture(title_tex);
-        SDL_FreeSurface(title_surf);
+    if (font) {
+        SDL_Color title_color = {255, 200, 50, 255};
+        SDL_Surface* title_surf = TTF_RenderText_Solid(font, "-- SPRITEFORGE ENGINE --", title_color);
+        if (title_surf) {
+            SDL_Texture* title_tex = SDL_CreateTextureFromSurface(renderer, title_surf);
+            SDL_Rect title_rect = {400 - (title_surf->w / 2), 20, title_surf->w, title_surf->h};
+            SDL_RenderCopy(renderer, title_tex, NULL, &title_rect);
+            SDL_DestroyTexture(title_tex);
+            SDL_FreeSurface(title_surf);
+        }
     }
 
     // 4. Draw a button for every project we found
@@ -77,14 +79,16 @@ bool launcher_update_and_render(SDL_Renderer* renderer, TTF_Font* font, char* ou
         SDL_RenderFillRect(renderer, &btn); // Draw the box
 
         // 5. Render the Text inside the button!
-        SDL_Color text_color = {255, 255, 255, 255};
-        SDL_Surface* text_surface = TTF_RenderText_Solid(font, projects[i], text_color);
-        if (text_surface) {
-            SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-            SDL_Rect text_rect = {btn.x + 20, btn.y + 10, text_surface->w, text_surface->h};
-            SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
-            SDL_DestroyTexture(text_texture);
-            SDL_FreeSurface(text_surface);
+        if (font) {
+            SDL_Color text_color = {255, 255, 255, 255};
+            SDL_Surface* text_surface = TTF_RenderText_Solid(font, projects[i], text_color);
+            if (text_surface) {
+                SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+                SDL_Rect text_rect = {btn.x + 20, btn.y + 10, text_surface->w, text_surface->h};
+                SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
+                SDL_DestroyTexture(text_texture);
+                SDL_FreeSurface(text_surface);
+            }
         }
     }
     

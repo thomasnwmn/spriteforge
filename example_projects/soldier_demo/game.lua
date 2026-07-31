@@ -1,5 +1,13 @@
 -- simple game script for the soldier demo
 
+-- Engine Configuration via Lua
+SetWindowTitle("SpriteForge: Soldier Demo")
+SetWindowSize(1024, 768)
+SetBackgroundColor(50, 80, 150)
+
+-- Custom Keybindings
+BindKey(ACTION_SHOOT, KEY_X)
+BindKey(ACTION_JUMP, "space")
 player = nil
 player_health = 1.0
 
@@ -32,13 +40,13 @@ function Update(delta_time)
 
     local current_anim = GetEntitySprite(player)
 
-    -- Check our Input Actions (0=Jump, 1=Left, 2=Up, 3=Down, 4=Right)
-    if IsActionDown(1) then move_x = move_x - (speed * delta_time) end
-    if IsActionDown(4) then move_x = move_x + (speed * delta_time) end
-    if IsActionDown(2) then move_y = move_y - (speed * delta_time) end
-    if IsActionDown(3) then move_y = move_y + (speed * delta_time) end
+    -- Check our Input Actions using named constants or action strings
+    if IsActionDown(ACTION_MOVE_LEFT) then move_x = move_x - (speed * delta_time) end
+    if IsActionDown(ACTION_MOVE_RIGHT) then move_x = move_x + (speed * delta_time) end
+    if IsActionDown(ACTION_MOVE_UP) then move_y = move_y - (speed * delta_time) end
+    if IsActionDown(ACTION_MOVE_DOWN) then move_y = move_y + (speed * delta_time) end
 
-    if IsActionDown(1) or IsActionDown(2) or IsActionDown(3) or IsActionDown(4) then
+    if IsActionDown(ACTION_MOVE_LEFT) or IsActionDown(ACTION_MOVE_UP) or IsActionDown(ACTION_MOVE_DOWN) or IsActionDown(ACTION_MOVE_RIGHT) then
         if current_anim ~= "assets/Soldier_Walk.png" then
             SetEntitySprite(player, "assets/Soldier_Walk.png", 8, 0.1, 100)
         end
@@ -49,7 +57,7 @@ function Update(delta_time)
     end
     
     -- example use of firing an event
-    if IsActionDown(0) then
+    if IsActionDown(ACTION_JUMP) then
         PublishEvent("PlayerHurt", "0.01")
     end
 
@@ -59,8 +67,8 @@ function Update(delta_time)
     -- camera follows the player
     local px, py = GetEntityPosition(player)
     
-    -- centering the screen on the player
-    SetCameraPosition(px - 400 + 20, py - 300 + 25)
+    -- centering the screen on the player (1024x768)
+    SetCameraPosition(px - 512 + 20, py - 384 + 25)
     
     -- ui rendering
     DrawText("Player Health", 10, 10, 255, 255, 255, 255)

@@ -4,6 +4,27 @@
 
 float engine_camera_x = 0.0f;
 float engine_camera_y = 0.0f;
+int engine_screen_w = 800;
+int engine_screen_h = 600;
+static Uint8 bg_color_r = 30;
+static Uint8 bg_color_g = 30;
+static Uint8 bg_color_b = 30;
+
+void render_init(void) {
+    // Basic init if needed
+}
+
+void render_set_bg_color(Uint8 r, Uint8 g, Uint8 b) {
+    bg_color_r = r;
+    bg_color_g = g;
+    bg_color_b = b;
+}
+
+void render_get_bg_color(Uint8* r, Uint8* g, Uint8* b) {
+    if (r) *r = bg_color_r;
+    if (g) *g = bg_color_g;
+    if (b) *b = bg_color_b;
+}
 
 void render_draw_rect(SDL_Renderer* renderer, float x, float y, float width, float height, float cam_x, float cam_y, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
     // First, create a rectangle struct using our float coordinates (we cast to an int since SDL renders full pixels)
@@ -79,8 +100,8 @@ void render_draw_background(SDL_Renderer* renderer, SDL_Texture* texture, float 
     int start_y = -((int)bg_y % tex_h);
     if (start_y > 0) start_y -= tex_h;
     
-    for (int y = start_y; y < 600; y += tex_h) {
-        for (int x = start_x; x < 800; x += tex_w) {
+    for (int y = start_y; y < engine_screen_h; y += tex_h) {
+        for (int x = start_x; x < engine_screen_w; x += tex_w) {
             SDL_Rect dest = { x, y, tex_w, tex_h };
             SDL_RenderCopy(renderer, texture, NULL, &dest);
         }

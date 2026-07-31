@@ -190,3 +190,23 @@ void entity_destroy(Entity* e) {
         e->active = false;
     }
 }
+
+void entity_set_velocity(Entity* e, float vx, float vy) {
+    if (e) {
+        e->vx = vx;
+        e->vy = vy;
+    }
+}
+
+void entity_get_velocity(Entity* e, float* out_vx, float* out_vy) {
+    if (e) {
+        if (out_vx) *out_vx = e->vx;
+        if (out_vy) *out_vy = e->vy;
+    }
+}
+
+void entity_set_gravity(Entity* e, float gravity) {
+    if (e) {
+        e->gravity = gravity;
+    }
+}

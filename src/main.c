@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
     events_init(); // Initialize the event system
     entity_init(); // Initialize the entity system
     input_set_default_keybinds(); // Set default keybinds for actions
-    script_init(renderer);        // Start the Lua Virtual Machine
+    script_init(window, renderer);        // Start the Lua Virtual Machine
     
     // --- TTF FONT INITIALIZATION ---
     if (TTF_Init() == -1) {
@@ -130,7 +130,7 @@ int main(int argc, char* argv[]) {
                             _chdir(engine_root_path);
                             
                             asset_init();
-                            script_init(renderer); // Re-initialize Lua
+                            script_init(window, renderer); // Re-initialize Lua
                         } else {
                             last_esc_time = current_ms;
                             show_esc_message = true;
@@ -149,7 +149,9 @@ int main(int argc, char* argv[]) {
         if (current_state == STATE_LAUNCHER) {
             SDL_SetRenderDrawColor(renderer, 30, 30, 50, 255);
         } else {
-            SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
+            Uint8 bg_r, bg_g, bg_b;
+            render_get_bg_color(&bg_r, &bg_g, &bg_b);
+            SDL_SetRenderDrawColor(renderer, bg_r, bg_g, bg_b, 255);
         }
         SDL_RenderClear(renderer);
 
@@ -169,9 +171,37 @@ int main(int argc, char* argv[]) {
 
         } else if (current_state == STATE_PLAYING) {
             
+            // Check if Lua requested quitting to launcher
+            if (scene_is_quit_pending()) {
+                scene_clear_quit_pending();
+                scene_clear_pending();
+                current_state = STATE_LAUNCHER;
+                show_esc_message = false;
+                
+                audio_stop_bgm();
+                script_cleanup();
+                asset_cleanup();
+                entity_init(); // Reset all entities
+                _chdir(engine_root_path);
+                
+                asset_init();
+                script_init(window, renderer); // Re-initialize Lua
+                continue;
+            }
+            
+            // Check if Lua requested changing scene
+            if (scene_is_pending()) {
+                char pending_file[256];
+                strncpy(pending_file, scene_get_pending(), sizeof(pending_file) - 1);
+                pending_file[sizeof(pending_file) - 1] = '\0';
+                scene_clear_pending();
+                
+                entity_init(); // Reset entities for new scene
+                script_load_file(pending_file);
+            }
+            
             // update game objects here using delta_time
             entity_update_all(delta_time); 
-            
             
             // tell lua to run game logic
             script_update(delta_time);
@@ -185,6 +215,12 @@ int main(int argc, char* argv[]) {
                 } else {
                     show_esc_message = false;
                 }
+            }
+
+            // Render Lua runtime error overlay if an error occurred
+            const char* script_err = script_get_last_error();
+            if (script_err) {
+                render_draw_text(renderer, (struct _TTF_Font*)ui_font, script_err, 10, 560, 255, 100, 100, 255);
             }
         }
         

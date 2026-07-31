@@ -6,8 +6,12 @@
 
 extern float engine_camera_x;
 extern float engine_camera_y;
+extern int engine_screen_w;
+extern int engine_screen_h;
 
 void render_init(void);
+void render_set_bg_color(Uint8 r, Uint8 g, Uint8 b);
+void render_get_bg_color(Uint8* r, Uint8* g, Uint8* b);
 
 void render_draw_rect(SDL_Renderer* renderer, float x, float y, float width, float height, float cam_x, float cam_y, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
